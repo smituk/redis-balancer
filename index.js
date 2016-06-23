@@ -11,6 +11,7 @@ const balancer = {
                 var connect = redis.createClient(config)
                     .on('connect', function() {
                         console.log('redis %j connected', config);
+                        connect.__index = connects.length;
                         connects.push(connect);
                         next_config();
                     })
