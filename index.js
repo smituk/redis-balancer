@@ -1,4 +1,5 @@
 const redis = require('redis');
+const commands = require('redis-commands');
 const async = require('async');
 require('redis-scanstreams')(redis);
 const connects = [];
@@ -31,12 +32,11 @@ const balancer = {
         return connects[sum % connects.length];
     }
 };
-const methods = ["get","set","mset","setex","expire","rpush","lrange","rtrim"];
-methods.forEach(function(method) {
-    balancer[method] = function() {
+commands.forEach(function(command) {
+    balancer[command] = function() {
         var conn = connect_by_key(arguments[0]);
-        return conn[method].apply(conn, arguments);
+        return conn[command].apply(conn, arguments);
     };
 })
 
-module.exports = balancer
+module.exports = balancer;
